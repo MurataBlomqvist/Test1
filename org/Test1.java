@@ -1,122 +1,72 @@
 package org;
 
 import java.util.logging.Logger;
+
+import org.form.gameForm;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Test1 {
 
-    private Logger log = Logger.getLogger(getClass().getName());
+    static Scanner myScanner = new Scanner(System.in);
 
-    int gridSize;
-    int[][] grid;
-    int[][] playerGrid;
-    int[][] npcGrid;
+    public static void main(String[] args) {
 
-    String gridConnectoString = "|";
-    String gridDivider = "|---";
-    String gridRoof = " ___";
-    String gridFloor = " ```";
+        Game game = new Game();
+        gameForm form = setup();
 
-    public void main() {
+        if (Objects.isNull(form)) {
+            return;
+        }
 
-        int in1 = 0;
+        game.gameOn(form);
         
-        try (Scanner myScanner = new Scanner(System.in)) {
+    }
+
+    private static gameForm setup() {
+        Logger log = Logger.getLogger(String.valueOf(Class.class));
+        int in1 = 0;
+        try {
             while(true) {
                 System.out.println("Setup grid for play(0-50)");
                 System.out.print("Insert size for grid:");
                 int tmpIn = myScanner.nextInt();
+                myScanner.nextLine();
                 if (0 < tmpIn && tmpIn < 51) {
                     in1 = tmpIn;
                     break;
                 }
                 System.out.println("Try Again\n");
             }
-            
         } catch (Exception e) {
             log.info(e.getMessage());
+            return null;
         }
 
-        setup(in1);
-        showGrid();
-
-        try (Scanner myScanner = new Scanner(System.in)) {
-            while(true) {
-                System.out.print("Insert the position in RowxColumn format ( second row first column = 2x1 ) :");
-                String tmpIn = myScanner.nextLine();
-                if () {
-                    in1 = tmpIn;
-                    break;
-                }
-                System.out.println("Try Again\n");
-            }
-            
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-
+        gameForm form = setupParams(in1);
+        return form;
     }
 
-    private boolean canSelect(int iIndex, int jIndex) {
-        return (this.grid[iIndex][jIndex] != 0);
-    }
-
-    private void selectGridPos(int iIndex, int jIndex, byte selectVal) {
-        this.grid[iIndex][jIndex] = selectVal;
-    }
-
-    private void showGrid() {
-        System.out.print(gridRoof);
-        for (int i = 0; i < gridSize; i++) {
-            System.out.println();
-            for (int j = 0; j < gridSize; j++) {
-                System.out.print(gridConnectoString);
-                System.out.print(" " + this.grid[i][j] + " ");
-            }
-            System.out.print(gridConnectoString);
-        }
-        System.out.print("\n" + gridFloor);
-    }
-
-    private void calcGrid() {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
-                
-                if (this.playerGrid[i][j] == 1) {
-                    this.grid[i][j] = 1;
-                } else if (this.npcGrid[i][j] == 1) {
-                    this.grid[i][j] = 2;
-                } else {
-                    this.grid[i][j] = 0;
-                }
-
-            }
-        }
-    }
-
-    private void setup(int gridSize) {
-        this.gridSize = gridSize;
-        this.grid = new int[gridSize][gridSize];
-        this.playerGrid = new int[gridSize][gridSize];
-        this.npcGrid = new int[gridSize][gridSize];
+    private static gameForm setupParams(int gridSize) {
+        gameForm form = new gameForm(gridSize, new int[gridSize][gridSize]);
         StringBuilder sbDivider = new StringBuilder();
         StringBuilder sbRoof = new StringBuilder();
         StringBuilder sbFloor = new StringBuilder();
         
         for (int i = 0; i < gridSize; i++) {
-            sbDivider.append(gridDivider);
-            sbRoof.append(gridRoof);
-            sbFloor.append(gridFloor);
+            sbDivider.append(form.getGridDivider());
+            sbRoof.append(form.getGridRoof());
+            sbFloor.append(form.getGridFloor());
             for (int j = 0; j < gridSize; j++) {
-                this.grid[i][j] = 0;
-                this.playerGrid[i][j] = 0;
-                this.npcGrid[i][j] = 0;
-                
+                // init the grids
+                form.addToGrid(i, j, 0);
             }
         }
-        this.gridDivider = sbDivider.append("|").toString();
-        this.gridRoof = sbRoof.toString();
-        this.gridFloor = sbFloor.toString();
+        // setting the grid layout to match grid size
+        form.setGridDivider(sbDivider.append("|").toString());
+        form.setGridRoof(sbRoof.toString());
+        form.setGridFloor(sbFloor.toString());
+        return form;
     }
 
 }
