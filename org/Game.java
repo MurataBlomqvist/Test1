@@ -1,6 +1,10 @@
 package org;
 
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.form.gameForm;
@@ -22,25 +26,53 @@ public class Game {
         while (true) {
             
             showGrid();
-
-            if (!playerInput()) {
-                continue;
-            }
             
-            if (checkWinCondition()) {
-                showGrid();
-                System.out.println("\nThe winner is : " + form.getWinnerName());
+            if (playerInput() && checkWinCondition()) {
+                printWinner();
+                break;
+            }
+            if (!hasPlayableTile()) {
+                System.out.println("\nNo playable tiles left. Its a tie!");
+                break;
+            }
+
+            if (npcInput() && checkWinCondition()) {
+                printWinner();
+                break;
+            }
+            if (!hasPlayableTile()) {
+                System.out.println("\nNo playable tiles left. Its a tie!");
                 break;
             }
 
         }
-        
+    }
+
+    private boolean hasPlayableTile() {
+        boolean hasPlayableTile = false;
+        for (int i = 0; i < form.getGridSize(); i++) {
+            for (int j = 0; j < form.getGridSize(); j++) {
+                if (form.selGridVal(i, j) == 0) {
+                    hasPlayableTile = true;
+                    break;
+                }
+            }
+            if (hasPlayableTile) {
+                break;
+            }
+        }
+        return hasPlayableTile;
+    }
+
+    private void printWinner() {
+        showGrid();
+        System.out.println("\nThe winner is : " + form.getWinnerName());
     }
 
     private boolean checkWinCondition() {
         boolean winCond = false;;
 
-        winCond = calcCorners();
+        winCond = calcWinCond();
         
         if (winCond) {
             if (form.getLastPlayed() == PLAYER_VAL) {
@@ -52,7 +84,7 @@ public class Game {
         return winCond;
     }
 
-    private boolean calcCorners() {
+    private boolean calcWinCond() {
         boolean winCond = false;
         int hitCount = 0;
         for (int i = 0; i < form.getGridSize(); i++) {
@@ -152,6 +184,30 @@ public class Game {
             form.setLastPlayed(PLAYER_VAL);
 
             return true;
+    }
+
+    private boolean npcInput() {
+        while (NPC_VAL == form.getLastPlayed()) {
+            Map<Integer, int[]> intMap = new HashMap<>();
+            List<Integer> intList = new ArrayList<>();
+            for (int i = 0; i < form.getGridSize(); i++) {
+                for (int j = 0; j < form.getGridSize(); j++) {
+                    int keyVal = (int)Math.random() * 1000;
+                    intList.add(keyVal);
+                    intMap.put(keyVal, new int[] {i,j});
+                }
+            }
+            intList.sort( (a, b) -> {return a.compareTo(b);});
+            for (Integer integer : intList) {
+                if (canSelect(intMap.get(integer)[0], intMap.get(integer)[1])) {
+                    form.addToGrid(intMap.get(integer)[0], intMap.get(integer)[1], NPC_VAL);
+                    form.setLastPlayed(NPC_VAL);
+                    break;
+                }
+            }
+        }
+        
+        return true;
     }
 
     private boolean canSelect(int pos1, int pos2) {

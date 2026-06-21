@@ -42,9 +42,7 @@ public class Test1 {
             log.info(e.getMessage());
             return null;
         }
-
-        gameForm form = setupParams(in1);
-        return form;
+        return setupParams(in1);
     }
 
     private static gameForm setupParams(int gridSize) {

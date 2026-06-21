@@ -34,6 +34,14 @@ public class gameForm {
     public int selGridVal(int pos1, int pos2) {
         return grid[pos1][pos2];
     }
+    
+    private int[][] npcInputGrid;
+    public int getNpcInputGridVal(int pos1, int pos2) {
+        return npcInputGrid[pos1][pos2];
+    }
+    public void setNpcInputGrid(int[][] npcInputGrid) {
+        this.npcInputGrid = npcInputGrid;
+    }
 
     String gridConnectoString = "|";
     public String getGridConnectoString() {
