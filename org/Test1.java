@@ -1,7 +1,5 @@
 package org;
 
-import java.util.logging.Logger;
-
 import org.form.gameForm;
 import java.util.Objects;
 import java.util.Scanner;
@@ -24,7 +22,6 @@ public class Test1 {
     }
 
     private static gameForm setup() {
-        Logger log = Logger.getLogger(String.valueOf(Class.class));
         int in1 = 0;
         try {
             while(true) {
@@ -39,7 +36,7 @@ public class Test1 {
                 System.out.println("Try Again\n");
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            System.out.println("Error during setup");
             return null;
         }
         return setupParams(in1);
@@ -56,7 +53,7 @@ public class Test1 {
             sbRoof.append(form.getGridRoof());
             sbFloor.append(form.getGridFloor());
             for (int j = 0; j < gridSize; j++) {
-                // init the grids
+                // init the grid
                 form.addToGrid(i, j, 0);
             }
         }

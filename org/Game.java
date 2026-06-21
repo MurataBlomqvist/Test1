@@ -1,11 +1,11 @@
 package org;
 
-import java.util.logging.Logger;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.form.gameForm;
 
@@ -14,8 +14,6 @@ public class Game {
     static Scanner myScanner = new Scanner(System.in);
 
     private gameForm form;
-
-    private Logger log = Logger.getLogger(getClass().getName());
 
     private final static int PLAYER_VAL = 1;
     private final static int NPC_VAL = 2;
@@ -27,25 +25,29 @@ public class Game {
             
             showGrid();
             
-            if (playerInput() && checkWinCondition()) {
+            if (playerInput() & checkWinCondition()) {
                 printWinner();
                 break;
             }
             if (!hasPlayableTile()) {
+                showGrid();
                 System.out.println("\nNo playable tiles left. Its a tie!");
                 break;
             }
 
-            if (npcInput() && checkWinCondition()) {
+            if (npcInput() & checkWinCondition()) {
                 printWinner();
                 break;
             }
             if (!hasPlayableTile()) {
+                showGrid();
                 System.out.println("\nNo playable tiles left. Its a tie!");
                 break;
             }
 
         }
+
+        myScanner.close();
     }
 
     private boolean hasPlayableTile() {
@@ -161,47 +163,55 @@ public class Game {
             while(true) {
                 System.out.print("\nInsert the position in RowxColumn format ( second row first column = 2x1 ) :");
                 String tmpIn = myScanner.nextLine();
-                if (tmpIn.matches("[1-" + form.getGridSize() + "][x][1-" + form.getGridSize() + "]")
-                && (0 < Integer.valueOf(tmpIn.substring(0, 1)) && Integer.valueOf(tmpIn.substring(2, 3)) <= form.getGridSize())) {
-                    String[] tmpStr = tmpIn.split("x");
+                String[] tmpStr = tmpIn.split("x");
+                if (tmpIn.matches("[0-9]*[x][0-9]*")) {
                     pos1 = Integer.valueOf(tmpStr[0]) - 1;
                     pos2 = Integer.valueOf(tmpStr[1]) - 1;
+                }
+                if (0 < pos1+1 && pos2+1 <= form.getGridSize()) {
+
+                    if (!canSelect(pos1, pos2)) {
+                        System.out.print("Try Again\n");
+                        continue;
+                    }
+
                     break;
                 }
-                System.out.println("Try Again\n");
+                System.out.print("Try Again\n");
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            System.out.print("Try Again\n");
         }
 
-            if (!canSelect(pos1, pos2)) {
-                System.out.println("Try Again\n");
-                return false;
-            }
+        form.addToGrid(pos1, pos2, PLAYER_VAL);
 
-            form.addToGrid(pos1, pos2, PLAYER_VAL);
+        form.setLastPlayed(PLAYER_VAL);
 
-            form.setLastPlayed(PLAYER_VAL);
-
-            return true;
+        return true;
     }
 
     private boolean npcInput() {
-        while (NPC_VAL == form.getLastPlayed()) {
+        boolean rtnBool = false;
+        Random math_thing = new java.util.Random();
+        while (!rtnBool) {
             Map<Integer, int[]> intMap = new HashMap<>();
-            List<Integer> intList = new ArrayList<>();
+            // Using treeSet for the naturalOrder implicit
+            Set<Integer> intSetList = new TreeSet<>();
+
             for (int i = 0; i < form.getGridSize(); i++) {
                 for (int j = 0; j < form.getGridSize(); j++) {
-                    int keyVal = (int)Math.random() * 1000;
-                    intList.add(keyVal);
+                    Integer keyVal = math_thing.nextInt();
+                    intSetList.add(keyVal);
                     intMap.put(keyVal, new int[] {i,j});
                 }
             }
-            intList.sort( (a, b) -> {return a.compareTo(b);});
-            for (Integer integer : intList) {
+            // intSetList is naturally ordered
+            // Higher value is more prio than low ones
+            for (Integer integer : intSetList) {
                 if (canSelect(intMap.get(integer)[0], intMap.get(integer)[1])) {
                     form.addToGrid(intMap.get(integer)[0], intMap.get(integer)[1], NPC_VAL);
                     form.setLastPlayed(NPC_VAL);
+                    rtnBool = true;
                     break;
                 }
             }
