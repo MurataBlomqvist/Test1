@@ -200,7 +200,13 @@ public class Game {
 
             for (int i = 0; i < form.gameData.gridSize(); i++) {
                 for (int j = 0; j < form.gameData.gridSize(); j++) {
-                    Integer keyVal = math_thing.nextInt();
+                    Integer keyVal = 0;
+                    if (hasPrio(i ,j)) {
+                        keyVal = math_thing.nextInt();
+                    } else {
+                        keyVal = (math_thing.nextInt()+1) / 2;
+                    }
+
                     intSetList.add(keyVal);
                     intMap.put(keyVal, new int[] {i,j});
                 }
@@ -220,6 +226,31 @@ public class Game {
         return true;
     }
 
+    private boolean hasPrio(int pos1, int pos2) {
+        if (
+            // middle of grid check
+            (
+                (pos1 > 0 && pos2 > 0) && (pos1 < form.gameData.gridSize() && pos2 < form.gameData.gridSize()) &&
+                NPC_VAL == form.selGridVal(pos1-1, pos2) ||
+                NPC_VAL == form.selGridVal(pos1+1, pos2) ||
+                NPC_VAL == form.selGridVal(pos1, pos2-1) ||
+                NPC_VAL == form.selGridVal(pos1, pos2+1)
+            ) ||
+            // outermost lines check
+            (
+                (
+                    pos1 == 0 && NPC_VAL == form.selGridVal(pos1, pos2+1)
+                ) ||
+                (
+                    pos2 == 0 && NPC_VAL == form.selGridVal(pos1-1, pos2)
+                )
+            )
+        ) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean canSelect(int pos1, int pos2) {
         return (form.selGridVal(pos1, pos2) == 0);
     }
@@ -230,7 +261,13 @@ public class Game {
             System.out.println();
             for (int j = 0; j < form.gameData.gridSize(); j++) {
                 System.out.print(form.gameData.gridConnectoString());
-                System.out.print(" " + form.selGridVal(i, j) + " ");
+                if (PLAYER_VAL == form.selGridVal(i, j)) {
+                    System.out.print(" O ");
+                } else if (NPC_VAL == form.selGridVal(i, j)) {
+                    System.out.print(" X ");
+                } else {
+                    System.out.print("   ");
+                }
             }
             System.out.print(form.gameData.gridConnectoString());
         }
