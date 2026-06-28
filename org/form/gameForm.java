@@ -1,8 +1,7 @@
 package org.form;
 
 public class gameForm {
-    public gameForm(int gridSize, int[][] grid) {
-        this.gridSize = gridSize;
+    public gameForm(int[][] grid) {
         this.grid = grid;
     }
 
@@ -22,11 +21,6 @@ public class gameForm {
         this.winnerName = winnerName;
     }
 
-    private int gridSize;
-    public int getGridSize() {
-        return gridSize;
-    }
-
     private int[][] grid;
     public void addToGrid(int pos1, int pos2, int val) {
         grid[pos1][pos2] = val;
@@ -43,32 +37,15 @@ public class gameForm {
         this.npcInputGrid = npcInputGrid;
     }
 
-    String gridConnectoString = "|";
-    public String getGridConnectoString() {
-        return gridConnectoString;
-    }
-
-    String gridDivider = "|---";
-    public String getGridDivider() {
-        return gridDivider;
-    }
-    public void setGridDivider(String gridDivider) {
-        this.gridDivider = gridDivider;
-    }
-
-    String gridRoof = " ___";
-    public String getGridRoof() {
-        return gridRoof;
-    }
-    public void setGridRoof(String gridRoof) {
-        this.gridRoof = gridRoof;
-    }
-
-    String gridFloor = " ```";
-    public String getGridFloor() {
-        return gridFloor;
-    }
-    public void setGridFloor(String gridFloor) {
-        this.gridFloor = gridFloor;
+    public record gameRecord(String gridConnectoString, String gridDivider, String gridRoof, String gridFloor, int gridSize) {}
+    public gameRecord gameData;
+    public void setGameRecord(String gridConnectoString, String gridDivider, String gridRoof, String gridFloor, int gridSize) {
+        this.gameData = new gameRecord(
+            gridConnectoString,
+            gridDivider,
+            gridRoof,
+            gridFloor,
+            gridSize
+        );
     }
 }

@@ -3,12 +3,18 @@ package org;
 import java.util.logging.Logger;
 
 import org.form.gameForm;
+
 import java.util.Objects;
 import java.util.Scanner;
 
 public class Test1 {
 
     static Scanner myScanner = new Scanner(System.in);
+
+    private final static String CONNECTO = "|";
+    private final static String DIVIDER = "|---";
+    private final static String ROOF = " ___";
+    private final static String FLOOR = " ```";
 
     public static void main(String[] args) {
 
@@ -28,11 +34,11 @@ public class Test1 {
         int in1 = 0;
         try {
             while(true) {
-                System.out.println("Setup grid for play(0-50)");
+                System.out.println("Setup grid for play(2-50)");
                 System.out.print("Insert size for grid:");
                 int tmpIn = myScanner.nextInt();
                 myScanner.nextLine();
-                if (0 < tmpIn && tmpIn < 51) {
+                if (1 < tmpIn && tmpIn < 51) {
                     in1 = tmpIn;
                     break;
                 }
@@ -46,24 +52,28 @@ public class Test1 {
     }
 
     private static gameForm setupParams(int gridSize) {
-        gameForm form = new gameForm(gridSize, new int[gridSize][gridSize]);
+        gameForm form = new gameForm(new int[gridSize][gridSize]);
         StringBuilder sbDivider = new StringBuilder();
         StringBuilder sbRoof = new StringBuilder();
         StringBuilder sbFloor = new StringBuilder();
         
         for (int i = 0; i < gridSize; i++) {
-            sbDivider.append(form.getGridDivider());
-            sbRoof.append(form.getGridRoof());
-            sbFloor.append(form.getGridFloor());
+            sbDivider.append(DIVIDER);
+            sbRoof.append(ROOF);
+            sbFloor.append(FLOOR);
             for (int j = 0; j < gridSize; j++) {
                 // init the grids
                 form.addToGrid(i, j, 0);
             }
         }
         // setting the grid layout to match grid size
-        form.setGridDivider(sbDivider.append("|").toString());
-        form.setGridRoof(sbRoof.toString());
-        form.setGridFloor(sbFloor.toString());
+        form.setGameRecord(
+            CONNECTO,
+            sbDivider.append(DIVIDER).toString(),
+            sbRoof.toString(),
+            sbFloor.toString(),
+            gridSize
+        );
         return form;
     }
 
