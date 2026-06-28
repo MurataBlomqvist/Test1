@@ -230,7 +230,7 @@ public class Game {
         if (
             // middle of grid check
             (
-                (pos1 > 0 && pos2 > 0) && (pos1 < form.gameData.gridSize() && pos2 < form.gameData.gridSize()) &&
+                (0 < pos1 && pos1 < form.gameData.gridSize()) && (0 < pos2 && pos2 < form.gameData.gridSize()) ||
                 NPC_VAL == form.selGridVal(pos1-1, pos2) ||
                 NPC_VAL == form.selGridVal(pos1+1, pos2) ||
                 NPC_VAL == form.selGridVal(pos1, pos2-1) ||
