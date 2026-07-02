@@ -1,18 +1,14 @@
 package org;
 
+import org.form.Gridable;
 import org.form.gameForm;
 
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Test1 {
+public class Test1 implements Gridable {
 
     static Scanner myScanner = new Scanner(System.in);
-
-    private final static String CONNECTO = "|";
-    private final static String DIVIDER = "|---";
-    private final static String ROOF = " ___";
-    private final static String FLOOR = " ```";
 
     public static void main(String[] args) {
 
@@ -25,6 +21,7 @@ public class Test1 {
 
         game.gameOn(form);
         
+        myScanner.close();
     }
 
     private static gameForm setup() {
